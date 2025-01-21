@@ -60,8 +60,7 @@ The project follows a modular architecture with the following components:
 ### Environment Setup
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/prathik-anand/Natural-Language-to-results-from-DB-using-LLM.git
    ```
 2. Install dependencies:
    ```bash
