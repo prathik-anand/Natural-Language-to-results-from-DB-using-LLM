@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from .exceptions.exceptions import DatabaseError, QueryGenerationError, ValidationError
-from .services.llm_service import generate_sql_query
+from .services.llm_service import generate_sql_query, get_results
 from .services.schema_service import get_schema, reload_schema
 from .utils import get_db_connection_string
 from .services.db_service import execute_sql_query as execute_query
@@ -27,20 +27,19 @@ def handle_query():
     
     try:
         connection_string = get_db_connection_string()
-        schema = get_schema(connection_string)
-        sql_query = generate_sql_query(natural_language_query, schema)
-        if(sql_query is None):
+        summary = get_results(natural_language_query)
+        if(summary is None):
             return jsonify({
             "status":-1,
             "sql_query": None,
             "message":"System is not able to prosses the query",
             "results": None
         })
-        results = execute_query(connection_string, sql_query)
+        ##results = execute_query(connection_string, sql_query)
         
         return jsonify({
-            "sql_query": sql_query,
-            "results": results
+            ##"sql_query": sql_query,
+            "results": summary
         })
         
     except Exception as e:
