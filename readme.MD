@@ -30,15 +30,41 @@ The project follows a modular architecture with the following components:
 curl -X POST http://localhost:5000/query -H "Content-Type: application/json" -d '{"query": "Show me all orders placed in the last 7 days."}'
 ```
 
-#### Example Response:
+#### Sucessful Response:
 
 ```json
 {
-  "status": 1,
-  "sql_query": "SELECT postal_code, SUM(quantity) as total_sales FROM orders GROUP BY postal_code ORDER BY total_sales DESC LIMIT 1;",
-  "result": "Most sold items are in postal code of 10035 and 924 orders have been placed."
+    "status": "success",
+    "sql_query": "SELECT postal_code, COUNT(*) AS sales_count\nFROM        orders\nGROUP BY postal_code\nORDER BY sales_count DESC",
+    "insights": "Based on the data regarding which postal codes have the highest sales, several insights can be drawn:\n\n1. **Top Postal Codes**: The most successful postal code is 10035, with a total of 255 sales. It is followed closely by 10024 and 10009, showing that these areas are incredibly strong markets for the product..",
+    "raw_results": [
+   [10035, 255],
+    [10024,226],
+    [10009,221]
+    ]
 }
 ```
+
+#### Error Response:
+```json
+{
+    "status": "error",
+    "error": {
+        "type": "ValidationError",
+        "message": "Query parameter is required",
+        "details": "Additional error context if available"
+    }
+}
+```
+
+### Error Types
+- **ValidationError (400)**: Input validation failed
+- **DatabaseError (500):** Database operation failed
+- **QueryGenerationError (500)**: SQL generation failed
+- **LLMServiceError (503)**: OpenAI service error
+- **SchemaError (500)**: Schema operation failed
+
+
 
 ### 2. Reload Database Schema
 
